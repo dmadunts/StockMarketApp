@@ -52,26 +52,22 @@ class StockRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getIntradayInfo(symbol: String): Flow<Result<List<IntradayInfo>>> {
-        return flow {
-            try {
-                val response = api.getIntradayInfo(symbol = symbol)
-                val intradayInfo = intradayInfoParser.parse(response.byteStream())
-                Result.Success(intradayInfo)
-            } catch (e: Throwable) {
-                return@flow emit(Result.Error(e))
-            }
+    override suspend fun getIntradayInfo(symbol: String): Result<List<IntradayInfo>> {
+        return try {
+            val response = api.getIntradayInfo(symbol = symbol)
+            val intradayInfo = intradayInfoParser.parse(response.byteStream())
+            Result.Success(intradayInfo)
+        } catch (e: Throwable) {
+            return Result.Error(e)
         }
     }
 
-    override suspend fun getCompanyInfo(symbol: String): Flow<Result<List<CompanyInfo>>> {
-        return flow {
-            try {
-                val result = api.getCompanyInfo(symbol = symbol)
-                Result.Success(result.toCompanyInfo())
-            } catch (e: Throwable) {
-                return@flow emit(Result.Error(e))
-            }
+    override suspend fun getCompanyInfo(symbol: String): Result<CompanyInfo> {
+        return try {
+            val result = api.getCompanyInfo(symbol = symbol)
+            Result.Success(result.toCompanyInfo())
+        } catch (e: Throwable) {
+            return Result.Error(e)
         }
     }
 }

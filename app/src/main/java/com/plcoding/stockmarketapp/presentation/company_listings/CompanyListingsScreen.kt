@@ -26,6 +26,7 @@ fun CompanyListingsScreen(
     navigator: DestinationsNavigator,
     viewModel: CompanyListingsViewModel = hiltViewModel()
 ) {
+    //todo: Add Loader on Screen
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = viewModel.state.isRefreshing)
     val state = viewModel.state
     Column(modifier = Modifier.fillMaxSize()) {
