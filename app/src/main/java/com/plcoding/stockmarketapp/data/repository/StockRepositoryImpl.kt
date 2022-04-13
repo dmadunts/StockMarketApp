@@ -2,10 +2,13 @@ package com.plcoding.stockmarketapp.data.repository
 
 import com.plcoding.stockmarketapp.data.csv.CSVParser
 import com.plcoding.stockmarketapp.data.local.StockDatabase
+import com.plcoding.stockmarketapp.data.mapper.toCompanyInfo
 import com.plcoding.stockmarketapp.data.mapper.toCompanyListing
 import com.plcoding.stockmarketapp.data.mapper.toCompanyListingEntity
 import com.plcoding.stockmarketapp.data.remote.StockApi
+import com.plcoding.stockmarketapp.domain.model.CompanyInfo
 import com.plcoding.stockmarketapp.domain.model.CompanyListing
+import com.plcoding.stockmarketapp.domain.model.IntradayInfo
 import com.plcoding.stockmarketapp.domain.repository.StockRepository
 import com.plcoding.stockmarketapp.util.Result
 import kotlinx.coroutines.flow.Flow
@@ -15,9 +18,10 @@ import javax.inject.Singleton
 
 @Singleton
 class StockRepositoryImpl @Inject constructor(
-    val api: StockApi,
-    val db: StockDatabase,
-    val companyListingsParser: CSVParser<CompanyListing>
+    private val api: StockApi,
+    private val db: StockDatabase,
+    private val companyListingsParser: CSVParser<CompanyListing>,
+    private val intradayInfoParser: CSVParser<IntradayInfo>
 ) :
     StockRepository {
     private val dao = db.dao
@@ -44,6 +48,29 @@ class StockRepositoryImpl @Inject constructor(
                 }
             } catch (e: Throwable) {
                 emit(Result.Error(e))
+            }
+        }
+    }
+
+    override suspend fun getIntradayInfo(symbol: String): Flow<Result<List<IntradayInfo>>> {
+        return flow {
+            try {
+                val response = api.getIntradayInfo(symbol = symbol)
+                val intradayInfo = intradayInfoParser.parse(response.byteStream())
+                Result.Success(intradayInfo)
+            } catch (e: Throwable) {
+                return@flow emit(Result.Error(e))
+            }
+        }
+    }
+
+    override suspend fun getCompanyInfo(symbol: String): Flow<Result<List<CompanyInfo>>> {
+        return flow {
+            try {
+                val result = api.getCompanyInfo(symbol = symbol)
+                Result.Success(result.toCompanyInfo())
+            } catch (e: Throwable) {
+                return@flow emit(Result.Error(e))
             }
         }
     }
