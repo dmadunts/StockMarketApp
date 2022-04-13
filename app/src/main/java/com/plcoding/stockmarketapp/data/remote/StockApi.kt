@@ -8,7 +8,7 @@ import retrofit2.http.Query
 interface StockApi {
     @GET("query?function=LISTING_STATUS")
     suspend fun getListings(
-        @Query("apiKey") apiKey: String = Keys.apiKey
+        @Query("apikey") apiKey: String = Keys.apiKey
     ): ResponseBody
 
     companion object {
