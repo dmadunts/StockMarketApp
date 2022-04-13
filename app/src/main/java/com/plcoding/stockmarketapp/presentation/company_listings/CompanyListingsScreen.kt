@@ -30,7 +30,8 @@ fun CompanyListingsScreen(
     val state = viewModel.state
     Column(modifier = Modifier.fillMaxSize()) {
         OutlinedTextField(
-            value = state.searchQuery, onValueChange = {
+            value = state.searchQuery,
+            onValueChange = {
                 viewModel.onEvent(CompanyListingsEvent.OnSearchQueryChange(it))
             },
             modifier = Modifier
