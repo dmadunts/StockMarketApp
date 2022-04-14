@@ -12,6 +12,7 @@ import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@Suppress("BlockingMethodInNonBlockingContext")
 @Singleton
 class IntradayInfoParser @Inject constructor() : CSVParser<IntradayInfo> {
     override suspend fun parse(stream: InputStream): List<IntradayInfo> {
@@ -26,10 +27,10 @@ class IntradayInfoParser @Inject constructor() : CSVParser<IntradayInfo> {
                     IntradayInfoDto(timestamp, close.toDouble()).toIntradayInfo()
                 }
                 .filter {
-                    it.date?.dayOfMonth == LocalDateTime.now().minusDays(1).dayOfMonth
+                    it.date.dayOfMonth == LocalDateTime.now().minusDays(1).dayOfMonth
                 }
                 .sortedBy {
-                    it.date?.hour
+                    it.date.hour
                 }
                 .also {
                     csvReader.close()
