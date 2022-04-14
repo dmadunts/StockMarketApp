@@ -46,7 +46,7 @@ class CompanyInfoViewModel @Inject constructor(
                 is Result.Error -> {
                     state.copy(
                         isLoading = false,
-                        error = result.throwable?.message,
+                        error = result.throwable?.message ?: "Error",
                         stockInfos = emptyList()
                     )
                 }

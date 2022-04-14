@@ -17,6 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.plcoding.stockmarketapp.R
+import com.plcoding.stockmarketapp.presentation.destinations.CompanyInfoScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -26,7 +27,6 @@ fun CompanyListingsScreen(
     navigator: DestinationsNavigator,
     viewModel: CompanyListingsViewModel = hiltViewModel()
 ) {
-    //todo: Add Loader on Screen
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = viewModel.state.isRefreshing)
     val state = viewModel.state
     Column(modifier = Modifier.fillMaxSize()) {
@@ -55,7 +55,7 @@ fun CompanyListingsScreen(
                         Modifier
                             .fillMaxWidth()
                             .clickable {
-                                //TODO: navigate to detail screen
+                                navigator.navigate(CompanyInfoScreenDestination(company.symbol))
                             }
                             .padding(16.dp)
                     )
